@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
       srand(time(NULL));
        int i = 0;
-       for(i; i < 1024 * 1024 * 10; i++) {
+       for(;i < 1024 * 1024 * 10; i++) {
          char r_el = rand();
          fwrite(&r_el, sizeof(char), 1, fd);
        }
