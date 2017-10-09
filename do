@@ -5,7 +5,7 @@
 # Should clean up after
 clean='false'
 lab_num=1
-while getopts "cn:" opt
+while getopts "cn:a:" opt
 do
 case $opt in
 c) echo "Cleaning afterwards..."
@@ -14,19 +14,17 @@ c) echo "Cleaning afterwards..."
 n) echo "Launching lab #${OPTARG}"
    lab_num=$OPTARG
    ;;
+a) args+=("$OPTARG") 
+   ;;   
 esac
 done
 
+echo "------------------ Programm output ------------------"
+
+lab_dir=$lab_num
 lab_num+="/out"
-if [ -f $lab_num ]; 
-then
-    ./$lab_num 
-else
-    cd ./$1/
-    make
-    cd ../
-    ./$lab_num
-fi
+make -C $lab_dir
+./$lab_num $args
 
 if [ "$clean" == "true" ];
 then
