@@ -2,9 +2,21 @@
 # Script compiles and starts lab needed. Look more in README.md file
 
 # Number of lab to be launched
-lab_num=$1 
 # Should clean up after
-clean=$2
+clean='false'
+lab_num=1
+while getopts "cn:" opt
+do
+case $opt in
+c) echo "Cleaning afterwards..."
+   clean="true"
+   ;;
+n) echo "Launching lab #${OPTARG}"
+   lab_num=$OPTARG
+   ;;
+esac
+done
+
 lab_num+="/out"
 if [ -f $lab_num ]; 
 then
