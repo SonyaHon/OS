@@ -1,8 +1,15 @@
 #include "./print.c"
 
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+
 int main(int argc, char ** argv) {
     
-    print_my("asd\%s %d ", "hello world", 12.01023123);
+    int f = open("res_file", O_CREAT | O_RDWR);
+    print_myf(f, "%s", "Hello world\n");
+    print_my("This is string - %s, this is decimal %d, this is float %f\n", "Hello World", 12, 120.001);
 
     return 0;
 }
