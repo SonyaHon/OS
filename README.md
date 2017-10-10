@@ -16,5 +16,10 @@
 Программа аналог `int printf()`. Имеет 2 функции:  
 1. `int print_my(char * format, ...)` - пишет в `stdout`, `format` - строка форматирования: имеет спец. символы `%s` - строка, `%d` - целое число, `%f` - десятичная дробь. В качестве доп. аргументов необходимо передать то, что указано с помощью спец. символов в том же порядке.  
 Пример:  
-    print_my("Hello World! Its %d year now.\n", 2017); // Выведет Hello World! Its 2017 year now.\n
-2. `int print_myf(int file, char * format, ...)` - пишет в файл `file`, который должен быть предварительно открыт с помощью `open()`. Строка форматирования и доп. аргументы те же что и (1) функции.
+    `print_my("Hello World! Its %d year now.\n", 2017); // Выведет Hello World! Its 2017 year now.\n`
+2. `int print_myf(int file, char * format, ...)` - пишет в файл `file`, который должен быть предварительно открыт с помощью `open()`. Строка форматирования и доп. аргументы те же что и у (1) функции.  
+Пример:  
+```
+int file = open("file.txt", O_WRONLY); // Запишет в файл file.txt строку Hello World!\n
+print_myf(file, "%s", "Hello World!\n");
+```
