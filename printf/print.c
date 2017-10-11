@@ -10,7 +10,7 @@
 #include <math.h>
 
 // helper functions
-
+    
 static void reverse(char * str, int len) {
     int i=0, j=len-1, temp;
     while (i<j)
@@ -121,8 +121,9 @@ int print_my(const char* format, ...) {
     va_start(args, format);
     bool wasLastArg = false;
     bool wasLastSlash = false;
-    char* res = (char *) malloc(0);
-    int length = 0;
+    char* res = (char *) malloc(1);
+    strcpy(res, "\0");
+    int length = 1;
     for(int i = 0; i < strlen(format); i++) {       
         if(format[i] == '%') {
             wasLastArg = true;
