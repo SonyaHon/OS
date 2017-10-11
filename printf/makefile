@@ -1,2 +1,2 @@
 all:
-	gcc main.c -o out -lm
+	gcc main.c -o out 
