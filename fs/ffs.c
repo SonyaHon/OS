@@ -12,7 +12,7 @@
 // Strcts n defines
 // FS Header
 typedef struct {
-    char* fs_check_code; // ffs_322
+    char fs_check_code[7]; // ffs_322
     long amount_of_files; // initial - 0
     long size_all;
     off_t last_file_offset; 
@@ -35,7 +35,13 @@ char * current_file_system;
 void ffs_create_file_system() {
     int f = open(BASE_FILE_NAME, O_CREAT | O_RDWR, 0666);
     ffs_header header;
-    header.fs_check_code = "ffs_322";
+    header.fs_check_code[0] = 'f';
+    header.fs_check_code[1] = 'f';
+    header.fs_check_code[2] = 's';
+    header.fs_check_code[3] = '_';
+    header.fs_check_code[4] = '3';
+    header.fs_check_code[5] = '2';
+    header.fs_check_code[6] = '2';
     header.amount_of_files = 0;
     header.size_all = sizeof(ffs_header);
     header.last_file_offset = sizeof(ffs_header);
@@ -45,7 +51,13 @@ void ffs_create_file_system() {
 // Create file system in specified (created) file
 void ffs_create_file_system_from_file(int file) {  
     ffs_header header;
-    header.fs_check_code = "ffs_322";
+    header.fs_check_code[0] = 'f';
+    header.fs_check_code[1] = 'f';
+    header.fs_check_code[2] = 's';
+    header.fs_check_code[3] = '_';
+    header.fs_check_code[4] = '3';
+    header.fs_check_code[5] = '2';
+    header.fs_check_code[6] = '2';
     header.amount_of_files = 0;
     header.size_all = sizeof(ffs_header);
     header.last_file_offset = sizeof(ffs_header);
@@ -57,7 +69,7 @@ void ffs_check_fs_header() {
     ffs_header header;
     lseek(f, 0, SEEK_SET);
     read(f, &header, sizeof(ffs_header));
-    printf("code: %s, fc: %ld, afs: %ld, lfo: %ld\n", header.fs_check_code, header.amount_of_files, header.size_all, header.last_file_offset);
+    printf("code: %s\nfile count: %ld\nall file size: %ld\nlast file offset: %ld\n", header.fs_check_code, header.amount_of_files, header.size_all, header.last_file_offset);
     close(f);
 }
 // Open ffs
@@ -77,7 +89,7 @@ void ffs_append_file_to_file_system(char* file) {
     ffs_file_header f_header;
     int fsd = open(current_file_system, O_RDWR);
     ffs_header header = ffs_read_fs_header(fsd);
-    int fd = open(file, O_RDONLY);
+    int fd = open(file, O_RDWR);
     struct stat file_stats;
     stat(file, &file_stats);
     f_header.file_name = file;
@@ -85,8 +97,11 @@ void ffs_append_file_to_file_system(char* file) {
     f_header.next_file_offset = header.last_file_offset + sizeof(ffs_file_header) + file_stats.st_size;
     lseek(fsd, 0, SEEK_END);
     write(fsd, &f_header, sizeof(f_header));
-    char* buf;
+    char buf[f_header.file_size];
+    //lseek(fd, 0, SEEK_SET);
     read(fd, buf, file_stats.st_size);
+    printf("File content: %s\n", buf);
+    lseek(fsd, 0, SEEK_END);
     write(fsd, buf, file_stats.st_size);
     header.amount_of_files = header.amount_of_files + 1;
     header.last_file_offset = f_header.next_file_offset;
@@ -100,18 +115,16 @@ void ffs_append_file_to_file_system(char* file) {
 void ffs_read_file_from_file_system(char* filename) {
     int fsd = open(current_file_system, O_RDWR);
     ffs_header header = ffs_read_fs_header(fsd);
-    off_t current_seek = sizeof(ffs_header);
-    lseek(fsd, sizeof(ffs_header), SEEK_SET);
+    off_t current_offset = sizeof(header);
+    lseek(fsd, current_offset, SEEK_SET);
     ffs_file_header f_header;
     read(fsd, &f_header, sizeof(ffs_file_header));
-    /*while(strcmp(filename, f_header.file_name) != 0) {
-        current_seek = f_header.next_file_offset;
-        read(fsd, &f_header, sizeof(ffs_file_header));
-    }*/
-    char * buf;
+    printf("Name: %s\nSize: %d\nOffset: %ld\n", f_header.file_name, f_header.file_size, f_header.next_file_offset);
+    lseek(fsd, sizeof(ffs_file_header), SEEK_CUR);
+    char buf[f_header.file_size];
     read(fsd, buf, f_header.file_size);
-    printf("ASDASDASD: %s\n", buf);
-    
+    printf("File: %s\n", buf);
+
     close(fsd);
 }
 // Delete file from file system
